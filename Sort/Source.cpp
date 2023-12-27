@@ -8,8 +8,8 @@
 using namespace std;
 
 //int a[1000000];
-//int a[] = { 7,-1,2,0,3,-8,6};
-
+//int a[] = { 7,-1,2,0,3,-8,6,12,5,3,-12,123,35 };
+//int n = sizeof(a)/sizeof(int);
 
 void create(int*& a, int n) {
 	srand(time(NULL));
@@ -77,12 +77,49 @@ void ShellSort(int* a, int n) {
 	}
 }
 
+// Heap sort
+// Heap la cay nhi phan hoan chinh
+// Chuyen mang a thanh max heap(not cha lon hon 2 not con)
+void Heapify(int arr[], int n, int i) {
+	int largest = i;
+	int left_child = 2 * i + 1;
+	int right_child = 2 * i + 2;
+
+	// So sanh voi node con trai
+	if (left_child < n && arr[left_child] > arr[largest])
+		largest = left_child;
+
+	// So sanh voi node con phai
+	if (right_child < n && arr[right_child] > arr[largest])
+		largest = right_child;
+
+	// Neu largest khong phai la i, thuc hien hoan doi va de quy heapify
+	if (largest != i) {
+		swap(arr[i], arr[largest]);
+		Heapify(arr, n, largest);
+	}
+}
+
+void BuildHeap(int a[], int n) {
+	// n/2-1 : la node la dau tien
+	for (int i = n / 2 - 1; i >= 0; i--) {
+		Heapify(a, n, i);
+	}
+}
+
+void HeapSort(int a[], int n) {
+	BuildHeap(a, n);
+	for (int i = n - 1; i >= 0; i--) {
+		swap(a[0], a[i]);
+		Heapify(a, i, 0);
+	}
+}
+
 int main() {
 
 	int n = 1000000;
 	int* a = new int[n];
 	create(a, n);
-	cout << CLOCKS_PER_SEC << endl;
 	clock_t start, end;
 
 
@@ -91,10 +128,10 @@ int main() {
 	//end = clock();
 	//cout << "***" << 1.0000 * (end - start) / CLOCKS_PER_SEC << "***\n";
 
-	start = clock();
-	InsertionSort(a, n);
-	end = clock();
-	cout << "***" << 1.0000 * (end - start) / CLOCKS_PER_SEC << "***\n";
+	//start = clock();
+	//InsertionSort(a, n);
+	//end = clock();
+	//cout << "***" << 1.0000 * (end - start) / CLOCKS_PER_SEC << "***\n";
 
 	//start = clock();
 	//SelectionSort(a, n);
@@ -105,8 +142,13 @@ int main() {
 	//BubbleSort(a, n);
 	//end = clock();
 	//cout << "***" << (end - start) / CLOCKS_PER_SEC << "***\n";
-
+	start = clock();
+	HeapSort(a, n);
+	end = clock();
 //	print(a, n);
+	cout << "***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
+
+	cout << endl;
 
 	return 0;
 }
