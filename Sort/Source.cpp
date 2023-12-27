@@ -8,8 +8,7 @@
 using namespace std;
 
 //int a[1000000];
-//int a[] = { 7,-1,2,0,3,-8,6,12,5,3,-12,123,35 };
-//int n = sizeof(a)/sizeof(int);
+
 
 void create(int*& a, int n) {
 	srand(time(NULL));
@@ -80,7 +79,7 @@ void ShellSort(int* a, int n) {
 // Heap sort
 // Heap la cay nhi phan hoan chinh
 // Chuyen mang a thanh max heap(not cha lon hon 2 not con)
-void Heapify(int arr[], int n, int i) {
+void Heapify(int arr[], int n, int i) { // Dua phan tu lon nhat len root
 	int largest = i;
 	int left_child = 2 * i + 1;
 	int right_child = 2 * i + 2;
@@ -99,14 +98,12 @@ void Heapify(int arr[], int n, int i) {
 		Heapify(arr, n, largest);
 	}
 }
-
-void BuildHeap(int a[], int n) {
+void BuildHeap(int a[], int n) { // Xay dung max heap tree
 	// n/2-1 : la node la dau tien
 	for (int i = n / 2 - 1; i >= 0; i--) {
 		Heapify(a, n, i);
 	}
 }
-
 void HeapSort(int a[], int n) {
 	BuildHeap(a, n);
 	for (int i = n - 1; i >= 0; i--) {
@@ -115,11 +112,64 @@ void HeapSort(int a[], int n) {
 	}
 }
 
-int main() {
+// Merge Sort
+// Chia de tri
+// chia thanh cac day con den khi day co 1 phan tu,
+// sau do tron 2 day con tang dan vao thanh 1 day tang dan 
+void Merge(int a[], int l, int mid, int r) {
+	// copy vao 2 mang phu
+	int nl = mid - l + 1;
+	int nr = r - mid;
+	int* left = new int[nl];
+	int* right = new int[nr];
+	for (int i = 0; i < nl; i++)
+		left[i] = a[l + i];
+	for (int i = 0; i < nr; i++)
+		right[i] = a[mid + 1 + i];
+	// Tron 2 mang
+	int i = 0, j = 0;
+	int k = l; // Chi so dau tien cua mang da tron
+	while (i < nl && j < nr) {
+		if (left[i] <= right[j]) {
+			a[k] = left[i];
+			i++;
+		}
+		else {
+			a[k] = right[j];
+			j++;
+		}
+		k++;
+	}
+	// Neu left[] con
+	while (i < nl) {
+		a[k] = left[i];
+		i++;
+		k++;
+	}
+	// Neu right[] con
+	while (j < nr) {
+		a[k] = right[j];
+		j++;
+		k++;
+	}
+}
 
-	int n = 1000000;
-	int* a = new int[n];
-	create(a, n);
+void MergeSort(int a[], int l, int r) {
+	if (l >= r)
+		return;
+	int mid = l + (r - l) / 2;
+	MergeSort(a, l, mid);
+	MergeSort(a, mid + 1, r);
+	Merge(a, l, mid, r);
+}
+
+
+int main() {
+	int a[] = { 7,-1,2,0,3,-8,6,12,5,3,-12,123,35 };
+	int n = sizeof(a)/sizeof(int);
+	//int n = 1000000;
+	//int* a = new int[n];
+	//create(a, n);
 	clock_t start, end;
 
 
@@ -136,17 +186,23 @@ int main() {
 	//start = clock();
 	//SelectionSort(a, n);
 	//end = clock();
-	//cout << "***" << (end - start) / CLOCKS_PER_SEC << "***\n";
+	//cout << "***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
 
 	//start = clock();
 	//BubbleSort(a, n);
 	//end = clock();
-	//cout << "***" << (end - start) / CLOCKS_PER_SEC << "***\n";
+	//cout << "***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
+
+	//start = clock();
+	//HeapSort(a, n);
+	//end = clock();
+	//cout << "***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
+
 	start = clock();
-	HeapSort(a, n);
+	MergeSort(a, 0, n - 1);
 	end = clock();
-//	print(a, n);
-	cout << "***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
+	print(a, n);
+	cout << "\n***" << 1.000 * (end - start) / CLOCKS_PER_SEC << "***\n";
 
 	cout << endl;
 
